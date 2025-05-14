@@ -2,12 +2,12 @@
 // Created by James Pickering on 8/31/24.
 //
 
-#include "shader.hpp"
-#include "light.hpp"
-#include "material.hpp"
+#include "../../shader.hpp"
+#include "../../light.hpp"
+#include "../../material.hpp"
 
-#include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
+#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glad/glad.h>
+#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/gtc/type_ptr.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -103,6 +103,10 @@ auto Shader::setFloat(const std::string &name, float value) const -> void {
 
 auto Shader::setVec3(const std::string &name, glm::vec3 value) const -> void {
     glUniform3f(glGetUniformLocation(id, name.c_str()), value.x, value.y, value.z);
+}
+
+auto Shader::setVec4(const std::string &name, glm::vec4 value) const -> void {
+    glUniform4f(glGetUniformLocation(id, name.c_str()), value.x, value.y, value.z, value.w);
 }
 
 auto Shader::setMat4(const std::string &name, glm::mat4 value) const -> void {

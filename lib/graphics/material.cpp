@@ -2,7 +2,7 @@
 // Created by James Pickering on 9/2/24.
 //
 
-#include "material.hpp"
+#include "../../material.hpp"
 
 const Material Materials::emerald = {
         glm::vec3(0.0215f, 0.1745f, 0.0215f),

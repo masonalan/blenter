@@ -2,9 +2,9 @@
 // Created by James Pickering on 9/2/24.
 //
 
-#include "light.hpp"
+#include "../../light.hpp"
 
-#include "enum_math.hpp"
+#include "../../enum_math.hpp"
 #include "shader.hpp"
 
 #include <iostream>

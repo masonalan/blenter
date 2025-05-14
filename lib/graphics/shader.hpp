@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
+#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/glm.hpp>
 
 #include <string>
 
@@ -26,6 +26,7 @@ struct Shader {
     auto setInt(const std::string& name, int value) const -> void;
     auto setFloat(const std::string& name, float value) const -> void;
     auto setVec3(const std::string& name, glm::vec3 value) const -> void;
+    auto setVec4(const std::string& name, glm::vec4 value) const -> void;
     auto setMat4(const std::string& name, glm::mat4 value) const -> void;
 
     auto setMaterial(const Material& material) const -> void;
