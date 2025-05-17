@@ -2,15 +2,17 @@
 // Created by James Pickering on 3/19/25.
 //
 
-#ifndef EVENT_HPP
-#define EVENT_HPP
+#pragma once
 
+struct Event {
+    auto accept() {
+        _accepted = true;
+    }
 
+    [[nodiscard]] auto isAccepted() const {
+        return _accepted;
+    }
 
-class event {
-
+private:
+    bool _accepted{false};
 };
-
-
-
-#endif //EVENT_HPP

@@ -1,14 +1,51 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/x64/ninja -G Ninja -S /Users/jamespickering/dev/lighting -B /Users/jamespickering/dev/lighting/cmake-build-debug
-CMake Error at CMakeLists.txt:6 (find_package):
-  Could not find a package configuration file provided by "glm" with any of
-  the following names:
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja --toolchain ~/Documents/dev/vcpkg/scripts/buildsystems/vcpkg.cmake -G Ninja -S /Users/jamespickering/Documents/dev/art -B /Users/jamespickering/Documents/dev/art/cmake-build-debug
+-- Running vcpkg install
+Detecting compiler hash for triplet arm64-osx...
+Compiler found: /Library/Developer/CommandLineTools/usr/bin/c++
+All requested packages are currently installed.
+Total install time: 42 ns
+glad provides CMake targets:
 
-    glmConfig.cmake
-    glm-config.cmake
+  # this is heuristically generated, and may not be correct
+  find_package(glad CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE glad::glad)
 
-  Add the installation prefix of "glm" to CMAKE_PREFIX_PATH or set "glm_DIR"
-  to a directory containing one of the above files.  If "glm" provides a
-  separate development package or SDK, be sure it has been installed.
+glfw3 provides CMake targets:
 
+  # this is heuristically generated, and may not be correct
+  find_package(glfw3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE glfw)
 
--- Configuring incomplete, errors occurred!
+glfw3 provides pkg-config modules:
+
+  # A multi-platform library for OpenGL, window and input
+  glfw3
+
+The package glm provides CMake targets:
+
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm)
+
+    # Or use the header-only version
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm-header-only)
+
+rapidjson provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(RapidJSON CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE rapidjson)
+
+rapidjson provides pkg-config modules:
+
+  # A fast JSON parser/generator for C++ with both SAX/DOM style API
+  RapidJSON
+
+The package stb provides CMake targets:
+
+    find_package(Stb REQUIRED)
+    target_include_directories(main PRIVATE ${Stb_INCLUDE_DIR})
+-- Running vcpkg install - done
+-- Configuring done (2.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/jamespickering/Documents/dev/art/cmake-build-debug

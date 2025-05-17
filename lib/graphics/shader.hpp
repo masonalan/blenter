@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 #include <string>
 

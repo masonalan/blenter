@@ -3,7 +3,7 @@
 //
 
 #include "shapes.hpp"
-#include "camera.hpp"
+#include "lib/graphics/camera.hpp"
 #include "texture.hpp"
 
 #include <glad/glad.h>
@@ -37,8 +37,8 @@ auto Triangle::render() const noexcept -> void {
 // ---------------------------------------------------------------------------------------------------------------------
 Rectangle::Rectangle() {
     const auto &&indices = (unsigned int[]){
-            0, 1, 3,// first triangle
-            1, 2, 3 // second triangle
+        0, 1, 3, // first triangle
+        1, 2, 3 // second triangle
     };
 
     unsigned int ebo;
@@ -71,8 +71,8 @@ TexturedRectangle::TexturedRectangle() {
     tex2 = Texture::fromPng("nav-play-inverse.png");
 
     const auto &&indices = (unsigned int[]){
-            0, 1, 3,// first triangle
-            1, 2, 3 // second triangle
+        0, 1, 3, // first triangle
+        1, 2, 3 // second triangle
     };
 
     unsigned int ebo;
@@ -106,30 +106,32 @@ auto TexturedRectangle::render() const noexcept -> void {
 TexturedCube::TexturedCube(Shader shader)
     : _shader{shader},
       _cubePositions(std::array<glm::vec3, 9>{
-              glm::vec3(5.f, 0.f, 0.f),
-              glm::vec3(-5.f, 0.f, -0.f),
-              glm::vec3(0.f, 0.f, 5.f),
-              glm::vec3(0.f, -0.f, -5.f),
-              glm::vec3(-2.7f, 3.0f, -3.5f),
-              glm::vec3(2.3f, -4.0f, -2.5f),
-              glm::vec3(1.5f, 2.0f, -2.5f),
-              glm::vec3(4.5f, -3.2f, -1.5f),
-              glm::vec3(-2.3f, 3.6f, 5.5f)}) {
+          glm::vec3(5.f, 0.f, 0.f),
+          glm::vec3(-5.f, 0.f, -0.f),
+          glm::vec3(0.f, 0.f, 5.f),
+          glm::vec3(0.f, -0.f, -5.f),
+          glm::vec3(-2.7f, 3.0f, -3.5f),
+          glm::vec3(2.3f, -4.0f, -2.5f),
+          glm::vec3(1.5f, 2.0f, -2.5f),
+          glm::vec3(4.5f, -3.2f, -1.5f),
+          glm::vec3(-2.3f, 3.6f, 5.5f)
+      }) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     const auto images = std::array<const char *, 9>{
-            "palette.png",
-            "nav-play-inverse.png",
-            "large-logo.png",
-            "btn-play.png",
-            "gradient-logo.png",
-            "face.png",
-            "logo.png",
-            "nav-play.png",
-            "circle-logo.png"};
+        "palette.png",
+        "nav-play-inverse.png",
+        "large-logo.png",
+        "btn-play.png",
+        "gradient-logo.png",
+        "face.png",
+        "logo.png",
+        "nav-play.png",
+        "circle-logo.png"
+    };
 
     for (const auto img: images) {
         _textures.push_back(Texture::fromPng(img));
@@ -179,7 +181,8 @@ TexturedCube::TexturedCube(Shader shader)
         auto vbo = (unsigned int){};
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, _asteroidCount * sizeof(glm::mat4), &_asteroidModels[_asteroidCount * k], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, _asteroidCount * sizeof(glm::mat4), &_asteroidModels[_asteroidCount * k],
+                     GL_STATIC_DRAW);
 
         glGenVertexArrays(1, &i);
         glBindVertexArray(i);
@@ -212,9 +215,7 @@ TexturedCube::TexturedCube(Shader shader)
 }
 
 auto TexturedCube::render(const Camera &camera, Shader instancedShader) const noexcept -> void {
-
     for (auto i = 0; i < _cubeCount; ++i) {
-
         _shader.use();
         glBindVertexArray(vao);
 
@@ -225,7 +226,8 @@ auto TexturedCube::render(const Camera &camera, Shader instancedShader) const no
 
         auto model = glm::mat4{1.f};
         model = glm::translate(model, _cubePositions[i]);
-        model = glm::rotate(model, (float) glfwGetTime() * glm::radians(20.f * static_cast<float>(i + 1)), glm::vec3(1.f, 0.3f, 0.f));
+        model = glm::rotate(model, (float) glfwGetTime() * glm::radians(20.f * static_cast<float>(i + 1)),
+                            glm::vec3(1.f, 0.3f, 0.f));
 
         _shader.setMat4("model", model);
         _shader.setVec3("viewPos", camera.position());
@@ -342,9 +344,10 @@ auto VertexBuffer::init() noexcept -> void {
      */
     {
         const auto &&vertices = (float[]){
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.0f, 0.5f, 0.0f};
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
 
         _triangleVbo = (unsigned int){};
 
@@ -358,10 +361,10 @@ auto VertexBuffer::init() noexcept -> void {
      */
     {
         const auto &&vertices = (float[]){
-                0.5f, 0.5f, 0.0f,  // top right
-                0.5f, -0.5f, 0.0f, // bottom right
-                -0.5f, -0.5f, 0.0f,// bottom left
-                -0.5f, 0.5f, 0.0f  // top left
+            0.5f, 0.5f, 0.0f, 0.f, 0.f, 1.f, 1.f, 1.f, // top right
+            0.5f, -0.5f, 0.0f, 0.f, 0.f, 1.f, 1.f, 0.f, // bottom right
+            -0.5f, -0.5f, 0.0f, 0.f, 0.f, 1.f, 0.f, 0.f, // bottom left
+            -0.5f, 0.5f, 0.0f, 0.f, 0.f, 1.f, 0.f, 1.f // top left
         };
 
         _rectangleVbo = (unsigned int){};
@@ -376,47 +379,48 @@ auto VertexBuffer::init() noexcept -> void {
      */
     {
         const auto &&vertices = (float[]){
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 
-                -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 
-                -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+        };
 
         _cubeVbo = (unsigned int){};
 

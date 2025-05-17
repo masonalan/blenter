@@ -2,14 +2,14 @@
 // Created by James Pickering on 9/2/24.
 //
 
-#include "../../light.hpp"
+#include "light.hpp"
 
-#include "../../enum_math.hpp"
+#include "enum_math.hpp"
 #include "shader.hpp"
 
 #include <iostream>
 
-auto DirectionalLight::applyToShader(const Shader &shader) const noexcept -> void {
+auto DirectionalLight::applyToShader(const Shader& shader) const noexcept -> void {
     if ((shader.components() & ShaderComponent::DirectionalLight) == ShaderComponent::None) {
         std::cout << "Error: shader does not support DirectionalLight" << std::endl;
         return;
@@ -21,7 +21,7 @@ auto DirectionalLight::applyToShader(const Shader &shader) const noexcept -> voi
     shader.setVec3("dirLight.specular", specular);
 }
 
-auto PointLight::applyToShader(const Shader &shader) const noexcept -> void {
+auto PointLight::applyToShader(const Shader& shader) const noexcept -> void {
     if ((shader.components() & ShaderComponent::PointLight) == ShaderComponent::None) {
         std::cout << "Error: shader does not support PointLight" << std::endl;
         return;
@@ -36,7 +36,7 @@ auto PointLight::applyToShader(const Shader &shader) const noexcept -> void {
     shader.setFloat("posLight.quadratic", attenuation.quadratic);
 }
 
-auto Flashlight::applyToShader(const Shader &shader) const noexcept -> void {
+auto Flashlight::applyToShader(const Shader& shader) const noexcept -> void {
     if ((shader.components() & ShaderComponent::PointLight) == ShaderComponent::None) {
         std::cout << "Error: shader does not support Flashlight" << std::endl;
         return;
@@ -51,7 +51,7 @@ auto Flashlight::applyToShader(const Shader &shader) const noexcept -> void {
     shader.setFloat("flashlight.outerCutoff", outerCutoff);
 }
 
-auto Flashlight::update(const Shader &shader, glm::vec3 pos, glm::vec3 dir) noexcept -> void {
+auto Flashlight::update(const Shader& shader, glm::vec3 pos, glm::vec3 dir) noexcept -> void {
     position = pos;
     direction = dir;
 

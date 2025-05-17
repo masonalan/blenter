@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 #include <functional>
 
@@ -19,7 +19,6 @@ struct Camera {
     Camera(ProjectionType type);
 
     auto setSize(glm::ivec2 size) -> void;
-    // auto setAspectRatio(float ratio) noexcept -> void;
     auto setSpeed(float speed) noexcept -> void;
 
     [[nodiscard]] auto view() const noexcept -> glm::mat4;
@@ -28,7 +27,6 @@ struct Camera {
     [[nodiscard]] auto position() const noexcept -> glm::vec3;
     [[nodiscard]] auto front() const noexcept -> glm::vec3;
     [[nodiscard]] auto getWorldPos(float z) const noexcept -> glm::vec3;
-    // [[nodiscard]] auto getRegPos(float z) const noexcept -> glm::vec3;
 
     auto lookAt(float x, float y) noexcept -> void;
     auto move(const Window& window) noexcept -> void;
@@ -36,12 +34,12 @@ struct Camera {
 
     std::function<void(bool)> onMove;
 
+protected:
     auto update() -> void;
 
-protected:
 private:
     ProjectionType _projectionType;
-    glm::vec3 _pos;
+    glm::vec3 _pos{0.f, 0.f, 0.f};
     glm::vec3 _front{0.f, 0.f, -1.f};
     glm::vec3 _up;
     glm::vec3 _right;

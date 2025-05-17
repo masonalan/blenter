@@ -1,0 +1,3 @@
+/Users/jamespickering/Documents/dev/art/cmake-build-debug/CMakeFiles/lighting.dir
+/Users/jamespickering/Documents/dev/art/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/jamespickering/Documents/dev/art/cmake-build-debug/CMakeFiles/rebuild_cache.dir

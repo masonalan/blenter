@@ -4,27 +4,36 @@
 
 #pragma once
 
-#include "shader.hpp"
+#include "lib/graphics/cursor_type.hpp"
+#include "quad_entity.hpp"
 
-#include <glm/vec2.hpp>
+#include <unordered_map>
 
 struct Camera;
+struct Cursor;
 
-struct CursorEntity {
-    CursorEntity();
+constexpr auto getImagePath(CursorType type) -> const char* {
+    switch (type) {
+    case CursorType::Pointer:
+        return "cursor_pointer.png";
+    case CursorType::Expand:
+        return "cursor_resize.png";
+    case CursorType::Fist:
+        return "cursor_grabber.png";
+    case CursorType::Hand:
+        return "cursor_hand.png";
+    case CursorType::Pinch:
+        return "cursor_resizer.png";
+    default:
+        throw std::runtime_error("Cursor type not recognized");
+    }
+}
 
-    auto update(glm::vec2 pos, bool mouseDown) -> void;
-
-    auto render(Shader shader, const Camera &camera) const noexcept -> void;
-
-private:
-    unsigned int vao;
-    unsigned int texture;
-    unsigned int grabTex;
-
-    glm::vec2 pos;
-
-    bool grabbing = false;
-
-
-};
+// struct CursorEntity : QuadEntity {
+//     explicit CursorEntity();
+//
+//     // auto bindTextures() const -> void override;
+//
+// private:
+//     std::unordered_map<CursorType, unsigned int> _textures{};
+// };

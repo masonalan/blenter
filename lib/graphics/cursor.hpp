@@ -13,112 +13,94 @@
 #include <ostream>
 
 struct Cursor {
-    Cursor() = default;
-
-    auto updateClipSpacePosition() {
-        _lastClipSpacePos = _clipSpacePos;
-        _clipSpacePos = glm::vec2{_screenSpacePos / _viewportSize * 2.f};
-        _clipSpacePos = {std::fmin(1.f, std::fmax(-1.f, _clipSpacePos.x)),
-                         std::fmin(1.f, std::fmax(-1.f, _clipSpacePos.y))};
-    }
-
-    auto setViewport(glm::vec2 size) {
-        _viewportSize = size;
-    }
-
-    auto setScreenSpacePosition(glm::vec2 position) {
-        _screenSpacePos = position;
-        updateClipSpacePosition();
-    }
-
-    auto setCursorAction(CursorType action) {
-        _cursorAction = action;
-    }
-
-    [[nodiscard]] auto getClipSpacePosition() const {
-        return _clipSpacePos;
-    }
-
-    [[nodiscard]] auto getScreenSpacePosition() const {
-        return _screenSpacePos;
-    }
-
-    auto setPressed(const bool pressed) {
-        if (!_pressed && pressed) {
-            _clipSpaceMouseDownAt = _screenSpacePos;
-            if (_onPress) {
-                _onPress();
-            }
-        } else if (_pressed && !pressed) {
-            if (_onMouseUp) {
-                _onMouseUp();
-            }
-        }
-        _pressed = pressed;
-    }
-
-    auto setOnMouseDown(auto&& fn) {
-        _onPress = fn;
-    }
-
-    auto setOnMouseUp(auto&& fn) {
-        _onMouseUp = fn;
-    }
-
-    auto update() {
-        _lastClipSpacePos = _clipSpacePos;
-    }
-
-    [[nodiscard]] auto getClipSpaceDelta() const {
-        return _clipSpacePos - _lastClipSpacePos;
-    }
-
-    [[nodiscard]] auto toWorldSpace(const glm::vec2 clipSpace, const Camera& cam) const {
-        return cam.invProjView() * glm::vec4{clipSpace, 0.f, 1.f};
-    }
-
-    [[nodiscard]] auto getCursorAction() const {
-        return _cursorAction;
-    }
-
-    [[nodiscard]] auto isPressed() const {
-        return _pressed;
-    }
-
-    [[nodiscard]] auto posWhenLastPressed() const {
-        return _clipSpaceMouseDownAt;
-    }
-
-    auto move(glm::vec2 posScreenSpace) {
-        if (_isFirstMove) {
-            _lastPosScreenSpace = posScreenSpace;
-            _isFirstMove = false;
-        }
-
-        const auto delta = posScreenSpace - _lastPosScreenSpace;
-
-        _screenSpacePos.x += delta.x;
-        _screenSpacePos.y -= delta.y;
-        _lastPosScreenSpace = posScreenSpace;
-
-        updateClipSpacePosition();
-
-        std::cout << "Screen space: " << _screenSpacePos.x << ", " << _screenSpacePos.y << std::endl;
+    static auto instance() -> Cursor& {
+        return _instance;
     }
 
 private:
-    glm::vec2 _viewportSize;
-    glm::vec2 _screenSpacePos;
-    glm::vec2 _clipSpacePos;
-    glm::vec2 _lastClipSpacePos;
-    glm::vec2 _clipSpaceMouseDownAt;
-    glm::vec2 _lastPosScreenSpace;
+    static Cursor _instance;
 
-    CursorType _cursorAction = CursorType::Pointer;
+public:
+    glm::vec2 viewportSize;
+    glm::vec2 screenSpacePos;
+    glm::vec2 clipSpacePos;
+    glm::vec2 lastClipSpacePos;
+    glm::vec2 clipSpaceMouseDownAt;
+    glm::vec2 lastPosScreenSpace;
 
-    bool _pressed = false;
-    bool _isFirstMove = true;
+    CursorType cursorType = CursorType::Pointer;
 
-    std::function<void()> _onPress;
-    std::function<void()> _onMouseUp;
+    bool pressed = false;
+    bool isFirstMove = true;
+
+    std::function<void()> onPress;
+    std::function<void()> onMouseUp;
 };
+
+inline auto updateClipSpacePosition(Cursor& cur) {
+    // Update the clip position
+
+    cur.lastClipSpacePos = cur.clipSpacePos;
+    cur.clipSpacePos = glm::vec2{cur.screenSpacePos / cur.viewportSize * 2.f};
+    cur.clipSpacePos = {std::fmin(1.f, std::fmax(-1.f, cur.clipSpacePos.x)),
+                        std::fmin(1.f, std::fmax(-1.f, cur.clipSpacePos.y))};
+}
+
+inline auto setScreenSpacePosition(Cursor& cur, glm::vec2 position) {
+    // Set and update screen space position
+
+    cur.screenSpacePos = position;
+    updateClipSpacePosition(cur);
+}
+
+inline auto move(Cursor& cur, glm::vec2 posScreenSpace) {
+    // Move the cursor to a position in screen space
+
+    if (cur.isFirstMove) {
+        cur.lastPosScreenSpace = posScreenSpace;
+        cur.isFirstMove = false;
+    }
+
+    const auto delta = posScreenSpace - cur.lastPosScreenSpace;
+
+    cur.screenSpacePos.x += delta.x;
+    cur.screenSpacePos.y -= delta.y;
+    cur.lastPosScreenSpace = posScreenSpace;
+
+    updateClipSpacePosition(cur);
+}
+
+inline auto setPressed(Cursor& cur, const bool pressed) {
+    // Set the cursor as pressed and handle calling any callbacks
+    // that are set for the appropriate change
+
+    if (!cur.pressed && pressed) {
+        cur.clipSpaceMouseDownAt = cur.screenSpacePos;
+        cur.pressed = true;
+        if (cur.onPress) {
+            cur.onPress();
+        }
+    } else if (cur.pressed && !pressed) {
+        cur.pressed = false;
+        if (cur.onMouseUp) {
+            cur.onMouseUp();
+        }
+    }
+}
+
+inline auto toWorldSpace(const glm::vec2 clipSpace, const Camera& cam) {
+    // Converts a position in clip space to a position in world space
+
+    return cam.invProjView() * glm::vec4{clipSpace, 0.f, 1.f};
+}
+
+inline auto delta(const glm::vec2 start, const glm::vec2 end) {
+    // Gets the delta between two vectors
+
+    return end - start;
+}
+
+inline auto updateCursor(Cursor& cur) {
+    // Set the cursors last pos to the current pos
+    cur.lastClipSpacePos = cur.clipSpacePos;
+}

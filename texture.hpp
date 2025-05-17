@@ -5,5 +5,5 @@
 #pragma once
 
 struct Texture {
-    static auto fromPng(const char* path, bool flip = true) -> unsigned int;
+    static auto fromPng(const char* path, bool alpha = true, bool flip = true) -> unsigned int;
 };

@@ -2,13 +2,13 @@
 // Created by James Pickering on 9/1/24.
 //
 
-#include "../../camera.hpp"
+#include "camera.hpp"
 
-#include "../../window.hpp"
+#include "window.hpp"
 
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/GLFW/glfw3.h>
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/glm.hpp>
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/gtc/matrix_transform.hpp>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(ProjectionType type) :
     _projectionType{type} {
@@ -19,10 +19,6 @@ auto Camera::setSize(const glm::ivec2 size) -> void {
     _size = size;
     _aspectRatio = static_cast<float>(size.x) / static_cast<float>(size.y);
 }
-
-// auto Camera::setAspectRatio(const float ratio) noexcept -> void {
-//     _aspectRatio = ratio;
-// }
 
 auto Camera::setSpeed(const float speed) noexcept -> void {
     _speed = speed;
@@ -55,11 +51,6 @@ auto Camera::getWorldPos(const float z) const noexcept -> glm::vec3 {
     const auto look = position() + (front() * z);
     return look;
 }
-
-// auto Camera::getRegPos(const float z) const noexcept -> glm::vec3 {
-//     const auto c = Camera{ProjectionType::Perspective};
-//     return c.position() + c.front() * z;
-// }
 
 auto Camera::lookAt(float x, float y) noexcept -> void {
     if (!_cursorMovedOnce) {

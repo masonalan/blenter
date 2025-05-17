@@ -2,7 +2,7 @@
 // Created by James Pickering on 9/2/24.
 //
 
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 struct Material {
     glm::vec3 ambient;
@@ -37,4 +37,3 @@ struct Materials {
     static const Material whiteRubber;
     static const Material yellowRubber;
 };
-

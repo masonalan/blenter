@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "shader.hpp"
+#include "lib/graphics/shader.hpp"
 
 #include <array>
 #include <vector>

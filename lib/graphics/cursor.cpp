@@ -3,3 +3,5 @@
 //
 
 #include "cursor.hpp"
+
+Cursor Cursor::_instance{};

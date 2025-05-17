@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <../../cmake-build-debug/vcpkg_installed/arm64-osx/include/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 struct Shader;
 
@@ -21,7 +21,7 @@ struct DirectionalLight {
     glm::vec3 diffuse;
     glm::vec3 specular;
 
-    auto applyToShader(const Shader &shader) const noexcept -> void;
+    auto applyToShader(const Shader& shader) const noexcept -> void;
 };
 
 struct Attenuation {
@@ -52,7 +52,7 @@ struct PointLight {
     glm::vec3 specular;
     Attenuation attenuation;
 
-    auto applyToShader(const Shader &shader) const noexcept -> void;
+    auto applyToShader(const Shader& shader) const noexcept -> void;
 };
 
 struct Flashlight {
@@ -65,6 +65,6 @@ struct Flashlight {
     float cutoff;
     float outerCutoff;
 
-    auto applyToShader(const Shader &shader) const noexcept -> void;
-    auto update(const Shader &shader, glm::vec3 position, glm::vec3 direction) noexcept -> void;
+    auto applyToShader(const Shader& shader) const noexcept -> void;
+    auto update(const Shader& shader, glm::vec3 position, glm::vec3 direction) noexcept -> void;
 };
