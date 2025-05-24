@@ -6,9 +6,12 @@
 
 #include "window.hpp"
 
+#include <iostream>
+
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <ostream>
 
 Camera::Camera(ProjectionType type) :
     _projectionType{type} {
@@ -117,4 +120,16 @@ auto Camera::update() -> void {
     _front = normalize(direction);
     _right = normalize(cross(_front, _worldUp));
     _up = normalize(cross(_right, _front));
+}
+
+auto constrainPitch(Camera& cam) -> void {
+    if (cam._pitch > Camera::MaxPitch) {
+        cam._pitch = Camera::MaxPitch;
+    } else if (cam._pitch < -Camera::MaxPitch) {
+        cam._pitch = -Camera::MaxPitch;
+    }
+}
+
+auto getForward(const Camera& cam) -> glm::vec3 {
+    return glm::normalize(cam.front() - cam._pos);
 }

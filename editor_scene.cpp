@@ -5,6 +5,7 @@
 #include "editor_scene.hpp"
 
 #include "engine.hpp"
+#include "lib/graphics/color.hpp"
 #include "lib/graphics/view.hpp"
 #include "lib/graphics/window.hpp"
 #include "texture.hpp"
@@ -22,11 +23,26 @@ EditorScene::EditorScene(View& view, Engine& engine) :
     floorEntity = addEntity<Entity>();
     floorEntity->vao = genVao(RenderMode::Mode3D);
     setStyleAttr(floorEntity->style, Attr::FillColor, 0, glm::vec4{0.5f, 0.f, 0.f, 1.f});
-    setSize(*floorEntity, {2.f, 0.01f, 2.f});
-    setPosition(*floorEntity, {0.f, -0.4f, -3.f});
+    floorEntity->transform.pos = {0.f, -0.4f, -3.f};
+    floorEntity->transform.size = {2.f, 0.01f, 2.f};
+    applyTransform(floorEntity->model, floorEntity->transform);
+
+    loc = addEntity<Entity>();
+    loc->vao = genVao(RenderMode::Mode3D);
+    loc->transform.size = {0.05f, 0.05f, 0.05f};
+    applyTransform(loc->model, loc->transform);
+    setStyleAttr(loc->style, Attr::FillColor, Normal, color::yellow);
 
     cam = Camera{ProjectionType::Perspective};
+    cam.flags |= CF_Moveable | CF_CursorControlsLookAt;
     cam.setSize(view.getWindow().getSize());
+
+    onProcessInput = [this] {
+        const auto forward = getForward(cam);
+        std::cout << forward.x << ", " << forward.y << ", " << forward.z << std::endl;
+        loc->transform.pos = forward;
+        applyTransform(loc->model, loc->transform);
+    };
 }
 
 // auto EditorScene::update() -> void {

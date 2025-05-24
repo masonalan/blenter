@@ -37,11 +37,13 @@ struct View {
     }
 
     unsigned int _currentScene{0};
+    Engine& _engine;
 
 private:
     Window& _window;
     // Camera _cam2d;
     Shader _shader;
+
 
     std::vector<std::unique_ptr<Entity>> _blockEntities;
     std::vector<std::unique_ptr<Scene>> _scenes;

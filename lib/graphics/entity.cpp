@@ -14,7 +14,7 @@
 #include <iostream>
 
 auto renderEntity(const Entity& entity, const Shader shader, const Camera& camera) -> void {
-    if (!entity.vao.id) {
+    if (!entity.vao.id || entity.flags & Invisible) {
         return;
     }
 
@@ -24,16 +24,17 @@ auto renderEntity(const Entity& entity, const Shader shader, const Camera& camer
     const auto borderColor = getStyleAttr<glm::vec4>(entity.style, Attr::BorderColor, entity.state);
     const auto fillColor = getStyleAttr<glm::vec4>(entity.style, Attr::FillColor, entity.state);
     const auto borderWidth = getStyleAttr<float>(entity.style, Attr::BorderWidth, entity.state);
+    const auto showGrid = entity.flags & ShowGrid;
 
     shader.use();
     shader.setBool("useTexture", useTex);
     shader.setMat4("model", entity.model);
     shader.setVec3("viewPos", camera.position());
     shader.setBool("mouseDown", mousePressed);
-
     shader.setVec4("fillColor", fillColor);
     shader.setVec4("borderColor", borderColor);
     shader.setFloat("borderWidth", borderWidth);
+    shader.setBool("showGrid", showGrid);
 
     if (useTex) {
         bindTextures(entity.textures);
@@ -75,46 +76,29 @@ auto bindTextures(const std::vector<unsigned int>& textures) -> void {
 
 auto applyTransform(glm::mat4& model, const Transform& trans) -> void {
     model = glm::mat4{1.f};
+
     model = translate(model, trans.pos);
-    model = rotate(model, glm::radians(trans.rot.x), glm::vec3(0.f, 1.0f, 0.f));
-    model = rotate(model, glm::radians(trans.rot.y), glm::vec3(1., 0.f, 0.f));
+    model = rotate(model, glm::radians(trans.rot.z), glm::vec3(0, 0, 1));
+    model = rotate(model, glm::radians(trans.rot.y), glm::vec3(0, 1, 0));
     model = scale(model, trans.size);
+
+    // model = rotate(model, glm::radians(trans.rot.x), glm::vec3(1, 0, 0));
 }
 
-auto setPosition(Entity& ent, glm::vec3 pos) -> void {
-    ent.transform.pos = pos;
-    applyTransform(ent.model, ent.transform);
-}
+// auto setPosition(Entity& ent, glm::vec3 pos) -> void {
+//     ent.transform.pos = pos;
+//     applyTransform(ent.model, ent.transform);
+// }
+//
+// auto setSize(Entity& ent, glm::vec3 size) -> void {
+//     ent.transform.size = size;
+//     applyTransform(ent.model, ent.transform);
+// }
 
-auto setSize(Entity& ent, glm::vec3 size) -> void {
-    ent.transform.size = size;
-    applyTransform(ent.model, ent.transform);
-}
-
-auto setRotation(Entity& ent, const glm::vec2 rot) -> void {
-    ent.transform.rot = rot;
-    applyTransform(ent.model, ent.transform);
-}
-
-auto setRotationDelta(Entity& ent, glm::vec2 rotate, Cursor& cursor) -> void {
-    //if (!cursor.pressed) {
-    ent.transform.rot = ent.transform.crot + rotate;
-    // } else {
-    //     if (ent.edge.x != 0) {
-    //         ent.transform.size.x += delta(cursor.clipSpacePos, cursor.lastClipSpacePos).x * 2;
-    //     } else if (ent.edge.y != 0) {
-    //         ent.transform.size.y += delta(cursor.clipSpacePos, cursor.lastClipSpacePos).x * 2;
-    //     } else if (ent.edge.z != 0) {
-    //         ent.transform.size.z += delta(cursor.clipSpacePos, cursor.lastClipSpacePos).x * 2;
-    //     }
-    //     //ent.transform.rot = ent.transform.crot + rotate;
-    // }
-    applyTransform(ent.model, ent.transform);
-}
-
-auto commitRotation(Entity& ent) -> void {
-    ent.transform.crot = ent.transform.rot;
-}
+// auto setRotation(Entity& ent, const glm::vec2 rot) -> void {
+//     ent.transform.rot = rot;
+//     applyTransform(ent.model, ent.transform);
+// }
 
 auto containsPoint(glm::vec2 pos, glm::vec2 size, glm::vec2 point) -> bool {
     return point.x > pos.x - size.x / 2.f &&

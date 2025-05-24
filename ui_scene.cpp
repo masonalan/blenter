@@ -29,6 +29,7 @@ UiScene::UiScene(View& view, Engine& eng) :
     btnBlocks->onClick = [this](auto&) {
         btnScenes->state &= ~Selected;
         _view._currentScene = 0;
+        entCursor->flags &= ~Invisible;
     };
 
     applyStyle(btnBlocks->style, StyleClass::Default);
@@ -43,6 +44,7 @@ UiScene::UiScene(View& view, Engine& eng) :
     btnScenes->onClick = [this](auto&) {
         btnBlocks->state &= ~Selected;
         _view._currentScene = 1;
+        entCursor->flags |= Invisible;
     };
 
     applyStyle(btnScenes->style, StyleClass::Default);
@@ -74,13 +76,35 @@ UiScene::UiScene(View& view, Engine& eng) :
         offset += 80;
     }
 
+    auto type = CursorType::Pointer;
+    while (type != CursorType::None) {
+        curTexs[type] = Texture::fromPng(getImagePath(type));
+        type = (CursorType)((int)type + 1);
+    }
+
     entCursor = addEntity<Entity>();
     entCursor->vao = genVao(RenderMode::Mode2D);
-    entCursor->textures.push_back(Texture::fromPng(getImagePath(CursorType::Pointer)));
+    entCursor->textures.push_back(curTexs[CursorType::Pointer]);
     entCursor->flags |= FollowsMouse;
-    entCursor->transform.pos.z = -1;
-    entCursor->transform.size = {100, 100, 1};
+    entCursor->transform.pos.z = 0;
+    entCursor->transform.pos.x = 0;
+    entCursor->transform.size = {50, 50, 1};
     applyTransform(entCursor->model, entCursor->transform);
+
+    crosshair = addEntity<Entity>();
+    crosshair->vao = genVao(RenderMode::Mode2D);
+    crosshair->textures.push_back(Texture::fromPng("crosshair.png"));
+    crosshair->transform.pos = {0, 0, -2};
+    crosshair->transform.size = {20, 20, 1};
+    applyTransform(crosshair->model, crosshair->transform);
+
+    onTick = [this] {
+        const auto& cur = Cursor::instance();
+        if (entCursor->textures.front() != curTexs.at(cur.cursorType)) {
+            entCursor->textures.clear();
+            entCursor->textures.push_back(curTexs.at(cur.cursorType));
+        }
+    };
 
     //Cursor::instance().cursorType = CursorType::Hand;
 }

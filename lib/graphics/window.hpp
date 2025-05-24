@@ -18,7 +18,6 @@ struct Window {
     std::function<void(glm::vec2 pos)> onCursorMove;
     std::function<void()> onProcessInput;
 
-private:
     std::string _title;
     GLFWwindow* _window;
     glm::ivec2 _size;

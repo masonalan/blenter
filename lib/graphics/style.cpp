@@ -49,7 +49,7 @@ auto setStyleAttr(Style& style, Attr attr, int state, const T& val) -> void {
     const auto type = getType<T>();
     const auto map = static_cast<std::unordered_map<int, T>*>(getMap(style, type));
 
-    map->emplace((int)attr * All + state, val);
+    (*map)[(int)attr * All + state] = val;
 }
 
 template auto setStyleAttr<float>(Style&, Attr, int, const float&) -> void;
@@ -109,6 +109,7 @@ auto applyStyle(Style& style, const StyleClass type) -> void {
         setStyleAttr(style, Attr::BorderWidth, Hovered, 0.4f);
         setStyleAttr(style, Attr::BorderWidth, Selected, 0.4f);
         setStyleAttr(style, Attr::BorderWidth, Depressed, 0.3f);
+        setStyleAttr(style, Attr::CursorType, Hovered, CursorType::Pointer);
         break;
     case StyleClass::Button:
         setStyleAttr(style, Attr::CursorType, Normal, CursorType::Pointer);

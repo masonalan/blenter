@@ -6,6 +6,7 @@
 
 #include "lib/graphics/camera.hpp"
 #include "lib/graphics/scene.hpp"
+#include "texture.hpp"
 
 #include <memory>
 
@@ -18,7 +19,9 @@ struct UiScene : Scene {
     Entity* btnBlocks;
     Entity* btnScenes;
     Entity* entCursor;
+    Entity* crosshair;
     std::vector<Entity*> blockBtns;
+    std::unordered_map<CursorType, unsigned int> curTexs;
 
     Engine& engine;
 };

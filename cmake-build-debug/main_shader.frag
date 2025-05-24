@@ -74,6 +74,7 @@ uniform bool useMultiTextures;
 uniform bool focused;
 uniform bool selected;
 uniform float borderWidth;
+uniform bool showGrid;
 
 void main()
 {
@@ -135,6 +136,20 @@ void main()
         FragColor = vec4(borderColor.xyz * f, 1.f);
     }
     //    }
+
+    float subGridStep = 0.1f;
+    float gridStep = 0.5f;
+    float gridWidth = 0.003f;
+
+    if (showGrid) {
+        if (mod(FragPos.x, gridStep) < gridWidth || mod(FragPos.z, gridStep) < gridWidth) {
+            FragColor = color;
+        } else if (mod(FragPos.x, subGridStep) < gridWidth || mod(FragPos.z, subGridStep) < gridWidth) {
+            FragColor = color * 1.3f;
+        } else {
+            FragColor = vec4(0, 0, 0, 0);
+        }
+    }
 
 
 

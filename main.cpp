@@ -50,7 +50,9 @@ auto setupOpenGl() {
     glViewport(0, 0, WIN_WIDTH * VIEWPORT_SCALE, WIN_HEIGHT * VIEWPORT_SCALE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
+    glEnable(GL_MULTISAMPLE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_ALPHA_TEST);
 }
 
 auto main() -> int {

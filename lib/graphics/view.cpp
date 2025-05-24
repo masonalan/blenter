@@ -7,6 +7,7 @@
 #include "../../block_entity.hpp"
 #include "../../engine.hpp"
 #include "../../objects_scene.hpp"
+#include "color.hpp"
 #include "event.hpp"
 #include "window.hpp"
 
@@ -15,10 +16,9 @@
 #include <GLFW/glfw3.h>
 
 View::View(Window& window, Engine& engine) :
+    _engine(engine),
     _window{window},
-    _shader{"main_shader.vert", "main_shader.frag"} {// _cam2d{ProjectionType::Orthographic} {
-    // _cam2d.setSize(window.getSize());
-
+    _shader{"main_shader.vert", "main_shader.frag"} {
     _window.onScroll = [this](auto distance) {
         getCurrentScene()->wheelScrolled(distance);
         _uiScene->wheelScrolled(distance);
@@ -27,10 +27,12 @@ View::View(Window& window, Engine& engine) :
     _window.onCursorMove = [this](auto pos) {
         move(Cursor::instance(), pos);
 
-        auto event = Event{};
-
-        getCurrentScene()->mouseMoved(event);
-        _uiScene->mouseMoved(event);
+        auto ev = Event{};
+        _uiScene->mouseMoved(ev);
+        if (ev.isAccepted()) {
+            return;
+        }
+        getCurrentScene()->mouseMoved(ev);
     };
 
     _window.onResize = [this](auto size) {
@@ -39,23 +41,25 @@ View::View(Window& window, Engine& engine) :
         _uiScene->windowResized(size);
     };
 
-    _window.onProcessInput = [this]() {
+    _window.onProcessInput = [this] {
         const auto win = _window.getGlfwWindow();
         setPressed(Cursor::instance(), glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS);
         getCurrentScene()->processInput();
+
+        //_engine.shiftPressed = glfwGetKey(win, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
         _uiScene->processInput();
     };
 
-    Cursor::instance().onPress = ([this]() {
-        //_shader.setBool("mouseDown", true);
-        getCurrentScene()->mousePressed();
-        _uiScene->mousePressed();
-    });
+    Cursor::instance().onPress = [this] {
+        auto ev = Event{};
+        _uiScene->mousePressed(ev);
+        getCurrentScene()->mousePressed(ev);
+    };
 
     Cursor::instance().onMouseUp = [this] {
-       // _shader.setBool("mouseDown", false);
-        getCurrentScene()->mouseReleased();
-        _uiScene->mouseReleased();
+        auto ev = Event{};
+        _uiScene->mouseReleased(ev);
+        getCurrentScene()->mouseReleased(ev);
     };
 
     _shader.use();
@@ -67,14 +71,17 @@ View::View(Window& window, Engine& engine) :
 View::~View() = default;
 
 auto View::update() -> void {
-    // Cursor::instance()::setCursorAction(CursorType::Hand);
-
     updateCursor(Cursor::instance());
-    _scenes.at(_currentScene)->update();
+    if (getCurrentScene()->onTick) {
+        getCurrentScene()->onTick();
+    }
+    if (_uiScene->onTick) {
+        _uiScene->onTick();
+    }
 }
 
 auto View::render() const -> void {
-    glClearColor(0.95f, 0.99f, 0.9f, 1.f);
+    glClearColor(color::creme.r, color::creme.g, color::creme.b, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // -------------------------------------------------------------

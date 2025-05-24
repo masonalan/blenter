@@ -54,7 +54,8 @@ add_executable(lighting main.cpp
         lib/graphics/style.cpp
         lib/graphics/style.hpp
         lib/graphics/mouse.cpp
-        lib/graphics/mouse.hpp)
+        lib/graphics/mouse.hpp
+        lib/graphics/color.hpp)
 
 target_link_libraries(lighting PRIVATE glad::glad)
 target_link_libraries(lighting PRIVATE glfw)
@@ -178,3 +179,8 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/resources/objects.png
         ${PROJECT_BINARY_DIR}/objects.png)
+add_custom_command(
+        TARGET lighting POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/resources/crosshair.png
+        ${PROJECT_BINARY_DIR}/crosshair.png)

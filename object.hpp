@@ -15,7 +15,8 @@ struct Cursor;
 enum class Axis {
     X,
     Y,
-    Z
+    Z,
+    None
 };
 
 struct Face {

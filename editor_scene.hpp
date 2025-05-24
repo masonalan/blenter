@@ -26,6 +26,7 @@ struct EditorScene : Scene {
 
     std::vector<Entity*> blockEntities;
     Entity* floorEntity;
+    Entity* loc;
 
 private:
     Engine& _engine;

@@ -3,7 +3,7 @@
 Detecting compiler hash for triplet arm64-osx...
 Compiler found: /Library/Developer/CommandLineTools/usr/bin/c++
 All requested packages are currently installed.
-Total install time: 42 ns
+Total install time: 209 ns
 glad provides CMake targets:
 
   # this is heuristically generated, and may not be correct
@@ -46,6 +46,6 @@ The package stb provides CMake targets:
     find_package(Stb REQUIRED)
     target_include_directories(main PRIVATE ${Stb_INCLUDE_DIR})
 -- Running vcpkg install - done
--- Configuring done (2.6s)
+-- Configuring done (2.2s)
 -- Generating done (0.0s)
 -- Build files have been written to: /Users/jamespickering/Documents/dev/art/cmake-build-debug

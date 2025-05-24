@@ -17,5 +17,18 @@ struct ObjectsScene : Scene {
 
     Engine& engine;
     Entity* blockEnt;
+    Entity* rayBlockEnt;
     Entity* camEnt;
+    Entity* xAxis;
+    Entity* yAxis;
+    Entity* zAxis;
+    Entity* rayEnt;
+    Entity* xzPlane;
+    Entity* locOnPlane;
+
+    glm::vec2 lookAt{-90, 0};
+
+
+
+
 };

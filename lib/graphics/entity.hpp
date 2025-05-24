@@ -22,8 +22,9 @@ enum EntityFlag {
     IgnoreTexture = 1 << 5,
     FollowsMouse = 1 << 6,
     Depressable = 1 << 7,
-    RotatesOnDrag = 1 << 8,
     ResizeOnFaceDrag = 1 << 9,
+    ShowGrid = 1 << 10,
+    Invisible = 1 << 11,
 };
 
 enum StateFlag {
@@ -37,8 +38,7 @@ enum StateFlag {
 struct Transform {
     glm::vec3 pos;
     glm::vec3 size;
-    glm::vec2 rot;
-    glm::vec2 crot;
+    glm::vec3 rot;
 };
 
 enum class RenderMode {
@@ -71,12 +71,10 @@ auto renderEntity(const Entity& entity, Shader shader, const Camera& camera) -> 
 auto bindTextures(const std::vector<unsigned int>& textures) -> void;
 
 // transform.hpp
-auto setPosition(Entity& ent, glm::vec3 pos) -> void;
-auto setSize(Entity& ent, glm::vec3 size) -> void;
-auto setRotation(Entity& ent, glm::vec2 rot) -> void;
-auto setRotationDelta(Entity& ent, glm::vec2 rotate, Cursor& cursor) -> void;
+// auto setPosition(Entity& ent, glm::vec3 pos) -> void;
+// auto setSize(Entity& ent, glm::vec3 size) -> void;
+// auto setRotation(Entity& ent, glm::vec2 rot) -> void;
 auto applyTransform(glm::mat4& model, const Transform& trans) -> void;
-auto commitRotation(Entity& ent) -> void;
 auto containsPoint(glm::vec2 pos, glm::vec2 size, glm::vec2 point) -> bool;
 bool containsPoint(const std::vector<glm::vec4>& polygon, const glm::vec2& point);
 

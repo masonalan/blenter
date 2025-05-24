@@ -15,6 +15,11 @@ enum class ProjectionType {
     Orthographic
 };
 
+enum CameraFlags {
+    CF_Moveable = 1 << 0,
+    CF_CursorControlsLookAt = 1 << 1,
+};
+
 struct Camera {
     Camera(ProjectionType type);
 
@@ -34,10 +39,10 @@ struct Camera {
 
     std::function<void(bool)> onMove;
 
-protected:
     auto update() -> void;
 
-private:
+    int flags;
+
     ProjectionType _projectionType;
     glm::vec3 _pos{0.f, 0.f, 0.f};
     glm::vec3 _front{0.f, 0.f, -1.f};
@@ -55,13 +60,21 @@ private:
     float _fov{45};
     float _lastX;
     float _lastY;
-    float _pitch;
+    float _pitch{0};
     float _yaw{-90};
 
     bool _cursorMovedOnce{false};
-    float _speed{10.f};
+    float _speed{1.f};
+
+    float sinYaw;
+    float cosYaw;
+    float sinPitch;
+    float cosPitch;
 
     static constexpr float MaxPitch{89};
     static constexpr float Near{0.1};
     static constexpr float Far{100.f};
 };
+
+auto constrainPitch(Camera& cam) -> void;
+auto getForward(const Camera& cam) -> glm::vec3;

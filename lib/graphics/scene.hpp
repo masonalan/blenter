@@ -23,16 +23,13 @@ struct Scene {
     explicit Scene(View& view);
     virtual ~Scene();
 
-    auto update() -> void;
     auto render() const -> void;
     auto wheelScrolled(float offset) -> void;
-    auto mousePressed() const -> void;
-    auto mouseReleased() const -> void;
-    auto mouseMoved(Event& event) const -> void;
+    auto mousePressed(Event& ev) const -> void;
+    auto mouseReleased(Event& ev) const -> void;
+    auto mouseMoved(Event& ev) -> void;
     auto windowResized(glm::ivec2 size) -> void;
     auto processInput() -> void;
-    //
-    // [[nodiscard]] virtual auto getCamera() const -> Camera& = 0;
 
     [[nodiscard]] auto getView() -> View&;
     [[nodiscard]] auto getView() const -> const View&;
@@ -40,15 +37,21 @@ struct Scene {
     template <typename T, typename... Args>
         requires std::is_base_of_v<Entity, T>
     auto addEntity(Args&&... args) -> T* {
-        _entities.push_back(std::make_unique<T>(std::forward<Args>(args)...));
-        return static_cast<T*>(_entities.back().get());
+        ents.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+        return static_cast<T*>(ents.back().get());
     }
 
     int flags = 0;
-
     View& _view;
     Camera cam;
 
+    std::function<void()> onTick;
+    std::function<void()> onDrag;
+    std::function<void()> onMousePressed;
+    std::function<void()> onMouseReleased;
+    std::function<void()> onMouseMoved;
+    std::function<void()> onProcessInput;
+
 private:
-    std::vector<std::unique_ptr<Entity>> _entities;
+    std::vector<std::unique_ptr<Entity>> ents;
 };
